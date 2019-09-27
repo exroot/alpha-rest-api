@@ -1,0 +1,28 @@
+{
+    "name": "api",
+    "version": "1.0.0",
+    "description": "a rest api powered by express",
+    "main": "server.js",
+    "scripts": {
+        "start": "nodemon src/start.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "exroot",
+    "license": "ISC",
+    "dependencies": {
+        "bcrypt": "^3.0.6",
+        "body-parser": "^1.19.0",
+        "cors": "^2.8.5",
+        "express": "^4.17.1",
+        "jsonwebtoken": "^8.5.1",
+        "pg": "^7.12.1",
+        "pg-hstore": "^2.3.3",
+        "sequelize": "^5.19.0"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.6.2",
+        "@babel/preset-env": "^7.6.2",
+        "@babel/register": "^7.6.2",
+        "nodemon": "^1.19.2"
+    }
+}
