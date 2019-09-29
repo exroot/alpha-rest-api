@@ -10,6 +10,8 @@
     "author": "exroot",
     "license": "ISC",
     "dependencies": {
+        "@babel/runtime": "^7.6.2",
+        "@types/validator": "^10.11.3",
         "bcrypt": "^3.0.6",
         "body-parser": "^1.19.0",
         "cors": "^2.8.5",
@@ -21,8 +23,11 @@
     },
     "devDependencies": {
         "@babel/core": "^7.6.2",
+        "@babel/plugin-transform-runtime": "^7.6.2",
         "@babel/preset-env": "^7.6.2",
         "@babel/register": "^7.6.2",
+        "dotenv": "^8.1.0",
+        "morgan": "^1.9.1",
         "nodemon": "^1.19.2"
     }
 }

@@ -1,31 +1,34 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import sequelize from './database';
+import morgan from 'morgan';
+import dotenv from 'dotenv';
 
-// Routes
+dotenv.config();
+const app = express();
+const PORT = process.env.APP_PORT;
+
+// Importing routes
 import authRoutes from './routes/authRoutes';
 import noteRoutes from './routes/noteRoutes';
 import oddRoutes from './routes/oddRoutes';
 
-const app = express();
-const PORT = 3000;
-
 // Core middlewares
-app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
+app.use(morgan('dev'));
 
-app.get('/', (req, res, next) => {
-    res.write('<h1>hello world</h1>');
-    res.end();
-    next();
-});
-
-// Routes middleware
-app.use(authRoutes);
-app.use(noteRoutes);
+// Routes middlewares
+app.use('/auth', authRoutes);
+app.use('/api', noteRoutes);
 app.use(oddRoutes);
 
-app.listen(PORT, () => {
-    console.log(`server listen on port ${PORT}`);
-});
+sequelize
+    .sync()
+    .then(() =>
+        app.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
+        })
+    )
+    .catch((err) => console.log(err));

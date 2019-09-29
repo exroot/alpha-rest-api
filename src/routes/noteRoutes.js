@@ -1,13 +1,19 @@
-import express from 'express';
-import notesController from '../controllers/notesController';
+import { Router } from 'express';
+import * as notesController from '../controllers/notesController';
 
-const router = express.Router();
+const router = Router();
 
-router.get('/notes', notesController.getNotes);
-router.post('/notes', notesController.postNotes);
+//  Route: /api/notes
+router
+    .route('/notes')
+    .get(notesController.getAllNotes)
+    .post(notesController.postNotes);
 
-router.get('/notes/:id', notesController.getSingleNote);
-router.post('/notes/:id', notesController.updateNote);
-router.delete('/notes/:id', notesController.deleteNote);
+//  Route: /api/notes/~someId~
+router
+    .route('/notes/:id')
+    .get(notesController.getNote)
+    .put(notesController.updateNote)
+    .delete(notesController.deleteNote);
 
 export default router;
