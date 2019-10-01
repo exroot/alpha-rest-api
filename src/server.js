@@ -1,11 +1,10 @@
+import 'dotenv/config';
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import sequelize from './database';
 import morgan from 'morgan';
-import dotenv from 'dotenv';
 
-dotenv.config();
 const app = express();
 const PORT = process.env.APP_PORT;
 
