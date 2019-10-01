@@ -8,6 +8,10 @@ import morgan from 'morgan';
 const app = express();
 const PORT = process.env.APP_PORT;
 
+// Importing models
+import User from './models/User';
+import Note from './models/Note';
+
 // Importing routes
 import authRoutes from './routes/authRoutes';
 import noteRoutes from './routes/noteRoutes';
@@ -17,6 +21,10 @@ import oddRoutes from './routes/oddRoutes';
 app.use(bodyParser.json());
 app.use(cors());
 app.use(morgan('dev'));
+
+// Associations
+User.hasMany(Note);
+Note.belongsTo(User);
 
 // Routes middlewares
 app.use('/auth', authRoutes);
