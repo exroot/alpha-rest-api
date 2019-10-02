@@ -1,15 +1,17 @@
 import User from '../models/User';
 import bcrypt from 'bcrypt';
+import { validationResult } from 'express-validator';
 
 exports.postLogin = async (req, res, next) => {
+    const validationErrors = validationResult(req);
     const { email, password } = req.body;
+    if (!validationErrors.isEmpty()) {
+        return res
+            .status(422)
+            .json({ message: 'Error', data: validationErrors });
+    }
     try {
-        const user = await User.findOne({ email: email });
-        if (!user) {
-            return res.status(404).json({
-                message: "User isn't registered.",
-            });
-        }
+        const user = await User.findOne({ where: { email: email } });
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {
             return res.status(404).json({
@@ -23,24 +25,18 @@ exports.postLogin = async (req, res, next) => {
 };
 
 exports.postSignup = async (req, res, next) => {
-    const { email, password, confirmPassword } = req.body;
+    const validationErrors = validationResult(req);
+    if (!validationErrors.isEmpty()) {
+        return res
+            .status(422)
+            .json({ message: 'Validation error.', data: validationErrors });
+    }
+    const { email, password } = req.body;
     try {
-        const emailExist = await User.findOne({ email: email });
-        if (emailExist) {
-            return res
-                .status(400)
-                .json({ message: 'That email is already registered.' });
-        }
         const newUser = new User({
             email: email,
-            password:
-                password === confirmPassword
-                    ? await bcrypt.hash(password, 12)
-                    : null,
+            password: await bcrypt.hash(password, 12),
         });
-        if (!newUser.password) {
-            return res.status(400).json({ message: 'Passwords must match.' });
-        }
         await newUser.save();
         return res.json(200).json({ message: 'User has been registered.' });
     } catch (err) {

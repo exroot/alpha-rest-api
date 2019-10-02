@@ -5,7 +5,8 @@ curl --silent http://localhost:3000/api/notes | jq
 
 Post method:
 curl -X POST -H "Content-Type: application/json" -d '{"title":"fourty", "body": "this is the fourty"}' http://localhost:3000/api/notes
-
+curl -X POST -H "Content-Type: application/json" -d '{"email":"elias", "password": "nevera123", "confirmPassword": "nevera123"}' http://localhost:3000/auth/signup
+curl -X POST -H "Content-Type: application/json" -d '{"email":"elias.0298@gmail.com", "password": "nevera123"}' http://localhost:3000/auth/login
 Put method:
 curl -X PUT -H "Content-Type: application/json" -d '{"title":"third!", "body": "this body is updated mates"}' http://localhost:3000/api/notes/3
 

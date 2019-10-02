@@ -1,6 +1,6 @@
 import Note from '../models/Note';
 import User from '../models/User';
-import { validationResult } from 'express-validator/check';
+import { validationResult } from 'express-validator';
 
 exports.getAllNotes = async (req, res, next) => {
     try {
@@ -12,9 +12,11 @@ exports.getAllNotes = async (req, res, next) => {
 };
 
 exports.postNotes = async (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(422).json({ message: 'Validation failed.' });
+    const validationErrors = validationResult(req);
+    if (!validationErrors.isEmpty()) {
+        return res
+            .status(422)
+            .json({ message: 'Validation failed.post', data: validationError });
     }
     const { title, body } = req.body;
     const newNote = new Note({
@@ -23,7 +25,7 @@ exports.postNotes = async (req, res, next) => {
     });
     try {
         await newNote.save();
-        return res.status(200).json({ message: 'Note created.' });
+        return res.status(202).json({ message: 'Note created.' });
     } catch (err) {
         console.error(err);
     }
@@ -36,16 +38,19 @@ exports.getNote = async (req, res, next) => {
         if (!note) {
             return res.status(404);
         }
-        return res.status(200).json(note);
+        return res.status(202).json(note);
     } catch (err) {
         console.error(err);
     }
 };
 
 exports.updateNote = async (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(422).json({ message: 'Validation failed.' });
+    const validationErrors = validationResult(req);
+    if (!validationErrors.isEmpty()) {
+        return res.status(422).json({
+            message: 'Validation failedasdas.',
+            data: validationErrors,
+        });
     }
     const id = req.params.id;
     const { title, body } = req.body;
@@ -57,7 +62,7 @@ exports.updateNote = async (req, res, next) => {
         updatedNote.title = title;
         updatedNote.body = body;
         await updatedNote.save();
-        return res.status(200).json(updatedNote);
+        return res.status(202).json(updatedNote);
     } catch (err) {
         console.error(err);
     }
