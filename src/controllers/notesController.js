@@ -1,5 +1,6 @@
 import Note from '../models/Note';
 import User from '../models/User';
+import { validationResult } from 'express-validator/check';
 
 exports.getAllNotes = async (req, res, next) => {
     try {
@@ -11,6 +12,10 @@ exports.getAllNotes = async (req, res, next) => {
 };
 
 exports.postNotes = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ message: 'Validation failed.' });
+    }
     const { title, body } = req.body;
     const newNote = new Note({
         title: title,
@@ -38,6 +43,10 @@ exports.getNote = async (req, res, next) => {
 };
 
 exports.updateNote = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ message: 'Validation failed.' });
+    }
     const id = req.params.id;
     const { title, body } = req.body;
     try {
