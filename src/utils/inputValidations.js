@@ -15,10 +15,12 @@ const inputValidator = {
             .trim()
             .isEmail()
             .withMessage('Please, provide a valid email.')
-            .custom(async (value, { req }) => {
+            .custom(async (value) => {
                 const user = await User.findOne({ where: { email: value } });
                 if (user) {
-                    return Promise.reject('Email is already taken.');
+                    const error = new Error('Email is already taken.');
+                    error.statusCode = 401;
+                    throw error;
                 }
             }),
         body('password')
@@ -28,7 +30,9 @@ const inputValidator = {
             .trim()
             .custom(async (value, { req }) => {
                 if (value !== req.body.password) {
-                    return Promise.reject("Passwords doesn't match.");
+                    const error = new Error("Passwords doesn't match.");
+                    error.statusCode = 401;
+                    throw error;
                 }
             }),
     ],
@@ -40,7 +44,9 @@ const inputValidator = {
             .custom(async (value) => {
                 const user = await User.findOne({ where: { email: value } });
                 if (!user) {
-                    return Promise.reject("User isn't registered");
+                    const error = new Error("User isn't registered");
+                    error.statusCode = 401;
+                    throw error;
                 }
             }),
         body('password')

@@ -30,6 +30,9 @@ Note.belongsTo(User);
 app.use('/auth', authRoutes);
 app.use('/api', noteRoutes);
 app.use(oddRoutes);
+app.use((err, req, res, next) => {
+    return res.status(err.statusCode).json({ data: err.data });
+});
 
 sequelize
     .sync()
