@@ -28,7 +28,10 @@ exports.postNotes = async (req, res, next) => {
         await newNote.save();
         return res.status(202).json({ message: 'Note created.' });
     } catch (err) {
-        console.error(err);
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        throw err;
     }
 };
 
@@ -41,7 +44,10 @@ exports.getNote = async (req, res, next) => {
         }
         return res.status(202).json(note);
     } catch (err) {
-        console.error(err);
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        throw err;
     }
 };
 
@@ -53,19 +59,32 @@ exports.updateNote = async (req, res, next) => {
             data: validationErrors,
         });
     }
-    const id = req.params.id;
+    const noteId = req.params.id;
     const { title, body } = req.body;
     try {
-        const updatedNote = await Note.findByPk(id);
+        const updatedNote = await Note.findByPk(noteId);
         if (!updatedNote) {
-            return res.status(404).end();
+            return res
+                .status(404)
+                .json({ message: 'Couldnt find post.' })
+                .end();
+        }
+        if (updatedNote.userId !== req.userId) {
+            return res
+                .status(403)
+                .json({ message: 'Not authorized.' })
+                .end();
         }
         updatedNote.title = title;
         updatedNote.body = body;
         await updatedNote.save();
         return res.status(202).json(updatedNote);
     } catch (err) {
-        console.error(err);
+        console.log(err);
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        throw err;
     }
 };
 
@@ -74,13 +93,25 @@ exports.deleteNote = async (req, res, next) => {
     try {
         const note = await Note.findByPk(id);
         if (!note) {
-            return res.status(404).end();
+            return res
+                .status(404)
+                .json({ message: 'Couldnt find post.' })
+                .end();
+        }
+        if (note.userId !== req.userId) {
+            return res
+                .status(403)
+                .json({ message: 'Not authorized.' })
+                .end();
         }
         await note.destroy();
         return res
             .status(200)
             .json({ message: `Note ${id} has been deleted.` });
     } catch (err) {
-        console.error(err);
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        throw err;
     }
 };
