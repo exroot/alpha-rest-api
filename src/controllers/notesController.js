@@ -14,14 +14,15 @@ exports.getAllNotes = async (req, res, next) => {
 exports.postNotes = async (req, res, next) => {
     const validationErrors = validationResult(req);
     if (!validationErrors.isEmpty()) {
-        return res
-            .status(422)
-            .json({ message: 'Validation failed.post', data: validationError });
+        return res.status(422).json({
+            message: 'Validation failed',
+        });
     }
     const { title, body } = req.body;
     const newNote = new Note({
         title: title,
         body: body,
+        userId: req.userId,
     });
     try {
         await newNote.save();
@@ -36,7 +37,7 @@ exports.getNote = async (req, res, next) => {
     try {
         const note = await Note.findByPk(id);
         if (!note) {
-            return res.status(404);
+            return res.status(404).end();
         }
         return res.status(202).json(note);
     } catch (err) {

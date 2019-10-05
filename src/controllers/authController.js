@@ -1,6 +1,8 @@
+import 'dotenv/config';
 import User from '../models/User';
 import bcrypt from 'bcrypt';
 import { validationResult } from 'express-validator';
+import jwt from 'jsonwebtoken';
 
 exports.postLogin = async (req, res, next) => {
     try {
@@ -22,7 +24,12 @@ exports.postLogin = async (req, res, next) => {
             error.data = 'Invalid combination of email and password.';
             throw error;
         }
-        return res.status(202).json({ message: `${user.email} is log in.` });
+        const token = jwt.sign(
+            { email: user.email, userId: user.id },
+            process.env.PRIVATE,
+            { expiresIn: '1h' }
+        );
+        return res.status(200).json({ token: token, userId: user.id });
     } catch (err) {
         if (!err.statusCode) {
             err.statusCode = 500;
