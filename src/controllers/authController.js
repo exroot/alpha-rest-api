@@ -15,6 +15,12 @@ exports.postLogin = async (req, res, next) => {
         }
         const { email, password } = req.body;
         const user = await User.findOne({ where: { email: email } });
+		
+		if (!user) {
+			const error = new Error("User isn't registered");
+			error.statusCode = 401;
+			throw error;
+		}
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {
             const error = new Error(
@@ -29,7 +35,7 @@ exports.postLogin = async (req, res, next) => {
             process.env.PRIVATE,
             { expiresIn: '1h' }
         );
-        return res.status(200).json({ token: token, userId: user.id });
+        return res.status(200).json({ userId: user.id, email: user.email, token: token });
     } catch (err) {
         if (!err.statusCode) {
             err.statusCode = 500;

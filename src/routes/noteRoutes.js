@@ -8,7 +8,7 @@ const router = Router();
 router
     .route('/notes')
     .get(notesController.getAllNotes)
-    .post(isAuth, inputValidator.notes, notesController.postNotes);
+    .post(inputValidator.notes, notesController.postNotes);
 
 //  Route: /api/notes/~someId~
 router

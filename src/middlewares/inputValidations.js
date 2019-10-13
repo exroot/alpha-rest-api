@@ -40,15 +40,7 @@ const inputValidator = {
         body('email')
             .trim()
             .isEmail()
-            .withMessage('Please, provide a valid email.')
-            .custom(async (value) => {
-                const user = await User.findOne({ where: { email: value } });
-                if (!user) {
-                    const error = new Error("User isn't registered");
-                    error.statusCode = 401;
-                    throw error;
-                }
-            }),
+            .withMessage('Please, provide a valid email.'),
         body('password')
             .trim()
             .isLength({ min: 6 }),
